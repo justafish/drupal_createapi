@@ -1,0 +1,114 @@
+<?php
+/**
+ * @file
+ * Code for the CreateAPI module.
+ */
+
+include_once 'createapi.helpers.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function createapi_menu() {
+  $items = array();
+
+  // Use this to prevent errors from accessing array keys that don't exist.
+  $default_values = array(
+    'version' => '',
+    'path' => '',
+    'wrapper' => '',
+    'row' => '',
+    'data' => array(
+      'fields' => array(),
+      'properties' => array(),
+      'path' => NULL,
+    ),
+    'filters' => array(),
+    'custom_query' => array(
+      'query' => NULL,
+      'entity_type' => NULL,
+      'nid_alias' => FALSE,
+    ),
+  );
+
+  $content_type_endpoints = module_invoke_all('createapi_content_types');
+  foreach ($content_type_endpoints as $content_type => $endpoint) {
+    $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
+      'title' => $content_type,
+      'page callback' => '_createapi__page__content_types',
+      'page arguments' => array($content_type, array_merge($default_values, $endpoint)),
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );
+  }
+
+  $queue_endpoints = module_invoke_all('createapi_nodequeues');
+  foreach ($queue_endpoints as $queue_name => $endpoint) {
+    $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
+      'title' => $queue_name,
+      'page callback' => '_createapi__page__nodequeues',
+      'page arguments' => array($queue_name, array_merge($default_values, $endpoint)),
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );
+  }
+
+  $custom_endpoints= module_invoke_all('createapi_custom_entities_info');
+  foreach ($custom_endpoints as $endpoint_name => $endpoint) {
+    $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
+      'title' => $endpoint_name,
+      'page callback' => '_createapi__page__custom_entities',
+      'page arguments' => array($endpoint_name, array_merge($default_values, $endpoint)),
+      'access arguments' => array('access content'),
+      'type' => MENU_SUGGESTED_ITEM,
+    );
+  }
+
+  return $items;
+}
+
+/**
+ * Creates a JSON feed for a given content type.
+ *
+ * @param string $content_type
+ *   The bundle name.
+ * @param string $endpoint
+ *   Endpoint configuration array.
+ */
+function _createapi__page__content_types($content_type, $endpoint) {
+  $nodes = _createapi__helper__process_content_type($content_type, $endpoint['data']['fields'], $endpoint['data']['properties'], $endpoint['data']['path'], $endpoint['filters']);
+  $output = _createapi__helper__json_wrapper($nodes, $endpoint['wrapper'], $endpoint['row']);
+
+  _createapi__helper__json_response($output);
+}
+
+/**
+ * Creates a JSON feed for a given nodequeue.
+ *
+ * @param string $queue_name
+ *   The machine name of the nodequeue.
+ * @param string $endpoint
+ *   Endpoint configuration array.
+ */
+function _createapi__page__nodequeues($queue_name, $endpoint) {
+  $nodes = _createapi__helper__process_node_queue($queue_name, $endpoint['data']['fields'], $endpoint['data']['properties'], $endpoint['data']['path'], $endpoint['filters']);
+  $output = _createapi__helper__json_wrapper($nodes, $endpoint['wrapper'], $endpoint['row']);
+
+  _createapi__helper__json_response($output);
+}
+
+/**
+ * Creates a JSON feed for a given set of entities.
+ */
+function _createapi__page__custom_entities($endpoint_name, $endpoint) {
+  $query = module_invoke_all('createapi_custom_entities_query_' . $endpoint_name);
+  $query = array_pop($query);
+  $entities = array();
+  if (get_class($query) === 'EntityFieldQuery') {
+    $entities = _createapi__helper__process_custom($query, $endpoint['custom_query']['entity_type'], $endpoint['data']['fields'], $endpoint['data']['properties'], $endpoint['data']['path'], $endpoint['filters'], $endpoint['custom_query']['nid_alias']);
+  }
+  $output = _createapi__helper__json_wrapper($entities, $endpoint['wrapper'], $endpoint['row']);
+
+  _createapi__helper__json_response($output);
+}
+
