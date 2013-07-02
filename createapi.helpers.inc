@@ -100,10 +100,12 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
 
             case 'entityreference':
               $view = field_view_value($entity_type, $entity, $field_name, $items[$i]);
-              $output[] = array(
-                'eid' => $items[$i]['target_id'],
-                'value' => $view['#markup'],
-              );
+              if (isset($items[$i]['target_id']) && isset($view['#markup'])) {
+                $output[] = array(
+                  'eid' => $items[$i]['target_id'],
+                  'value' => $view['#markup'],
+                );
+              }
               break;
 
             case 'datestamp':
@@ -206,8 +208,6 @@ function _createapi__helper__process_node_queue($queue_name, $fields = array(), 
   _createapi__helper__filter__range_offset($query, $range, $offset);
 
   foreach ($filters as $filter => $items) {
-    $range  = FALSE;
-    $offset = FALSE;
     switch ($filter) {
       case 'properties':
         foreach ($items as $param => $property) {
