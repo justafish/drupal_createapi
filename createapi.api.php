@@ -6,28 +6,6 @@
  */
 
 /**
- * Serve a JavaScript file by the getjs API by adding it into the page.
- *
- * @param string $api_version
- *   The API version.
- *
- * @return array
- *   An array of script paths that are whitelisted for delivery.
- */
-function hook_createapi_addjs($api_version) {
-  $js = array();
-
-  if ($api_version === '1.0') {
-    $js = array(
-      'misc/collapse.js',
-      'sites/all/modules/custom/pants/pants.js',
-    );
-  }
-
-  return $js;
-}
-
-/**
  * Expose content types as endpoints.
  *
  * @return array
