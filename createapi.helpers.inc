@@ -24,7 +24,7 @@ include 'createapi.helpers.json.inc';
  *   A multidimensional array that can be easily passed into a function such as
  *  json_encode().
  */
-function _createapi__helper__process_entities(array $eids, $entity_type, $fields = array(), $properties = array(), $path = NULL) {
+function _createapi__helper__process_entities(array $eids, $entity_type, $fields = array(), $properties = array(), $path = FALSE) {
   $output = array();
   $entities = entity_load($entity_type, $eids);
 
@@ -41,7 +41,7 @@ function _createapi__helper__process_entities(array $eids, $entity_type, $fields
       $field_output[$key] = _createapi__helper__feed_format_field($entity_type, $entity, $field);
     }
 
-    if (isset($path)) {
+    if (isset($path) && $path) {
       $path_info = entity_uri($entity_type, $entity);
       if (isset($path_info['path'])) {
         $aliased_path = drupal_lookup_path('alias', $path_info['path']);
@@ -191,7 +191,7 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
  * @return array
  *   A formatted array of nodes for outputting.
  */
-function _createapi__helper__process_node_queue($queue_name, $fields = array(), $properties = array(), $path = NULL, $filters = array()) {
+function _createapi__helper__process_node_queue($queue_name, $fields = array(), $properties = array(), $path = FALSE, $filters = array()) {
   $nids = array();
 
   $query = db_select('nodequeue_queue', 'q');
@@ -249,7 +249,7 @@ function _createapi__helper__process_node_queue($queue_name, $fields = array(), 
  * @return array
  *   A formatted array of nodes for outputting.
  */
-function _createapi__helper__process_content_type($content_type, $fields = array(), $properties = array(), $path = NULL, $filters = array()) {
+function _createapi__helper__process_content_type($content_type, $fields = array(), $properties = array(), $path = FALSE, $filters = array()) {
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', $content_type)
@@ -282,7 +282,7 @@ function _createapi__helper__process_content_type($content_type, $fields = array
  * @return array
  *   A formatted array of entities for outputting.
  */
-function _createapi__helper__process_custom(EntityFieldQuery $query, $entity_type, $fields = array(), $properties = array(), $path = NULL, $filters = array(), $nid_alias = FALSE) {
+function _createapi__helper__process_custom(EntityFieldQuery $query, $entity_type, $fields = array(), $properties = array(), $path = FALSE, $filters = array(), $nid_alias = FALSE) {
   $eids = array();
 
   // Add filters.

@@ -21,12 +21,11 @@ function createapi_menu() {
     'data' => array(
       'fields' => array(),
       'properties' => array(),
-      'path' => NULL,
+      'path' => FALSE,
     ),
     'filters' => array(),
     'custom_query' => array(
-      'query' => NULL,
-      'entity_type' => NULL,
+      'entity_type' => FALSE,
       'nid_alias' => FALSE,
     ),
   );
