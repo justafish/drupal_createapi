@@ -16,7 +16,7 @@
  */
 function _createapi__helper__filter__property(&$query, $param, $property) {
   $query_params = drupal_get_query_parameters();
-  $param_value = (isset($query_params[$param]) && is_numeric($query_params[$param])) ? $query_params[$param] : FALSE;
+  $param_value = (isset($query_params[$param])) ? $query_params[$param] : FALSE;
 
   if ($param_value) {
     $type = get_class($query);
@@ -44,7 +44,7 @@ function _createapi__helper__filter__property(&$query, $param, $property) {
  */
 function _createapi__helper__filter__field(EntityFieldQuery &$query, $param, $column, $field) {
   $query_params = drupal_get_query_parameters();
-  $param_value = (isset($query_params[$param]) && is_numeric($query_params[$param])) ? $query_params[$param] : FALSE;
+  $param_value = (isset($query_params[$param])) ? $query_params[$param] : FALSE;
 
   if ($param_value) {
     $query->fieldCondition($field, $column, $param_value, '=');
@@ -63,7 +63,7 @@ function _createapi__helper__filter__field(EntityFieldQuery &$query, $param, $co
  */
 function _createapi__helper__filter__node_path(&$query, $param, $nid_field = 'nid') {
   $query_params = drupal_get_query_parameters();
-  $path = (isset($query_params[$param]) && is_string($query_params[$param])) ? $query_params[$param] : FALSE;
+  $path = (isset($query_params[$param])) ? $query_params[$param] : FALSE;
   $type = get_class($query);
 
   if ($path) {
