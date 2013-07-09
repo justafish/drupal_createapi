@@ -108,6 +108,9 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
               }
               break;
 
+            case 'datetime':
+              $output[] = strtotime($items[$i]['value']);
+              break;
             case 'datestamp':
               $output[] = $items[$i]['value'];
               break;
