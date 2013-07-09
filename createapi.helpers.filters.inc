@@ -33,6 +33,25 @@ function _createapi__helper__filter__property(&$query, $param, $property) {
 }
 
 /**
+ * Adds a filter by field value to a database query from a URL parameter.
+ *
+ * @param EntityFieldQuery $query
+ *   The query being acted upon.
+ * @param $param
+ *   The URL parameter to obtain the field value from.
+ * @param $field
+ *   The field to filter by.
+ */
+function _createapi__helper__filter__field(EntityFieldQuery &$query, $param, $column, $field) {
+  $query_params = drupal_get_query_parameters();
+  $param_value = (isset($query_params[$param]) && is_numeric($query_params[$param])) ? $query_params[$param] : FALSE;
+
+  if ($param_value) {
+    $query->fieldCondition($field, $column, $param_value, '=');
+  }
+}
+
+/**
  * Adds a filter by node path to a database query from a URL parameter.
  *
  * @param SelectQuery|EntityFieldQuery $query

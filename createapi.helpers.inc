@@ -299,6 +299,12 @@ function _createapi__helper__process_custom(EntityFieldQuery $query, $entity_typ
         }
         break;
 
+      case 'fields':
+        foreach ($items as $param => $field) {
+          _createapi__helper__filter__field($query, $param, $field['column'], $field['field']);
+        }
+        break;
+
       case 'path':
         if ($entity_type === 'node' && $nid_alias) {
           _createapi__helper__filter__node_path($query, $items, $nid_alias);

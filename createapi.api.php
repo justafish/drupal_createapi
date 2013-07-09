@@ -44,6 +44,17 @@ function hook_createapi_content_types() {
         'properties' => array(
           'id' => 'nid',
         ),
+        // The key represents the parameter to be used in the URL.
+        'fields' => array(
+          'person' => array(
+            'field' => 'field_person',
+            'column' => 'target_id',
+          ),
+          'type' => array(
+            'field' => 'field_type',
+            'column' => 'value',
+          ),
+        ),
         // The value is used as the URL parameter.
         'path' => 'path',
         'start_end' => array(
