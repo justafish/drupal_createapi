@@ -28,6 +28,29 @@ function hook_createapi_content_types() {
       'data' => array(
         'fields' => array(
           'short_title' => 'field_short_title',
+          'primary_image' => 'field_primary_image',
+          'teaser_image' => array('field_teaser_image' => array(
+            'fields' > array(
+              'alt' => 'field_file_image_alt_text',
+              'title' => 'field_file_image_title_text',
+              'caption' => 'field_caption',
+            ),
+            'styles' => array(
+              'thumbnail' => 'thumbnail',
+              'medium' => 'medium',
+              'large' => 'large',
+              'square_thumbnail' => 'square_thumbnail',
+            ),
+          ),
+          'assets' => array('field_asset_reference' => array(
+            'fields' => array(
+              'type' => 'field_type'
+            ),
+            'properties' => array(
+              'title' => 'title',
+            ),
+            'path' => 'path',
+          )),
         ),
         'properties' => array(
           'id' => 'nid',

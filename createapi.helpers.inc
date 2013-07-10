@@ -73,11 +73,9 @@ function _createapi__helper__process_entities(array $eids, $entity_type, $fields
  */
 function _createapi__helper__feed_format_field($entity_type, $entity, $field_name) {
   $output = array();
-  // File entities may have attached fields.
+  // File entities or entity references may have attached fields.
   if (is_array($field_name)) {
     $current = current($field_name);
-    $attached_fields = (isset($current['fields'])) ? $current['fields'] : array();
-    $styles = (isset($current['styles'])) ? $current['styles'] : array();
     $field_name = key($field_name);
   }
   if (isset($entity->{$field_name})) {
@@ -99,13 +97,44 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
               break;
 
             case 'entityreference':
+              $entity_type = $field_info['settings']['target_type'];
               $view = field_view_value($entity_type, $entity, $field_name, $items[$i]);
-              if (isset($items[$i]['target_id']) && isset($view['#markup'])) {
-                $output[] = array(
-                  'eid' => $items[$i]['target_id'],
-                  'value' => $view['#markup'],
+              $reference = array();
+
+              if (isset($items[$i]['target_id'])) {
+                $target_id = $items[$i]['target_id'];
+                $reference = array(
+                  'eid' => $target_id ,
                 );
+
+                if (isset($current)) {
+                  $referenced_entity = entity_load($entity_type, array($target_id));
+                  if (isset($referenced_entity[$target_id])) {
+                    $referenced_entity = $referenced_entity[$target_id];
+                    // Fields.
+                    if (isset($current['fields'])) {
+                      foreach ($current['fields'] as $key => $field) {
+                        $reference[$key] = _createapi__helper__feed_format_field($entity_type, $referenced_entity, $field);
+                      }
+                    }
+                    // Properties.
+                    if (isset($current['properties'])) {
+                      foreach ($current['properties'] as $key => $property) {
+                        $reference[$key] = $referenced_entity->{$property};
+                      }
+                    }
+                    // Path.
+                    if (isset($current['path'])) {
+                      $path = entity_uri($entity_type, $referenced_entity);
+                      $reference[$current['path']] = drupal_get_path_alias($path['path']);
+                    }
+                  }
+                }
+                elseif (isset($view['#markup'])) {
+                  $reference['value'] = $view['#markup'];
+                }
               }
+              $output[] = $reference;
               break;
 
             case 'datetime':
@@ -139,17 +168,15 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
 
               // Format the output for fields that are attached to this file
               // entity by recursively calling this function on child fields.
-              if (!empty($attached_fields)) {
-                $children = array();
-                foreach ($attached_fields as $key => $field) {
-                  $children[$key] = _createapi__helper__feed_format_field('file', $file, $field);
+              if (!empty($current['fields'])) {
+                foreach ($current['fields'] as $key => $field) {
+                  $file_output[$key] = _createapi__helper__feed_format_field('file', $file, $field);
                 }
-                $file_output = array_merge($children, $file_output);
               }
 
               // Add image styles.
-              if (!empty($styles)) {
-                foreach ($styles as $key => $style) {
+              if (!empty($current['styles'])) {
+                foreach ($current['styles'] as $key => $style) {
                   $file_output['styles'][$key] = image_style_url($style, $image['#item']['uri']);
                 }
               }
