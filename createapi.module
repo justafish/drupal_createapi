@@ -101,9 +101,11 @@ function _createapi__page__nodequeues($queue_name, $endpoint) {
  */
 function _createapi__page__custom_entities($endpoint_name, $endpoint) {
   $query = module_invoke_all('createapi_custom_entities_query_' . $endpoint_name);
-  $query = array_pop($query);
+  if (!empty($query)) {
+    $query = array_pop($query);
+  }
   $entities = array();
-  if (get_class($query) === 'EntityFieldQuery') {
+  if (isset($query) && is_object($query) && get_class($query) === 'EntityFieldQuery') {
     $entities = _createapi__helper__process_custom($query, $endpoint['custom_query']['entity_type'], $endpoint['data']['fields'], $endpoint['data']['properties'], $endpoint['data']['path'], $endpoint['filters'], $endpoint['custom_query']['nid_alias']);
   }
   $output = _createapi__helper__json_wrapper($entities, $endpoint['wrapper'], $endpoint['row']);
