@@ -68,7 +68,7 @@ function _createapi__helper__filter__node_path(&$query, $param, $nid_field = 'ni
 
   if ($path) {
     $internal_path = drupal_get_normal_path($path);
-    if (strlen($internal_path) > 6 && substr($internal_path, 0, 5) === 'node/') {
+    if (strlen($internal_path) > 5 && substr($internal_path, 0, 5) === 'node/') {
       $nid = substr($internal_path, 5);
       if (is_numeric($nid)) {
         switch ($type) {

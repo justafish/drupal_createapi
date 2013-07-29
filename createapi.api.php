@@ -139,6 +139,20 @@ function hook_createapi_nodequeues() {
 }
 
 /**
+ * Expode menus as an endpoint.
+ */
+function hook_createapi_menus() {
+  return array(
+    'main-menu' => array(
+      'version' => '1.0',
+      'path' => 'main-menu.json',
+      'wrapper' => 'links',
+      'row' => 'link',
+    ),
+  );
+}
+
+/**
  * Expose any entities as an endpoint.
  *
  * @return array

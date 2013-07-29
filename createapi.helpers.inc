@@ -262,6 +262,30 @@ function _createapi__helper__process_node_queue($queue_name, $fields = array(), 
 }
 
 /**
+ * Retrieves items in a given menu.
+ *
+ * @param string $menu_name
+ *   The machine name of the menu.
+ *
+ * @return array
+ *   A formatted array of menu items for outputting.
+ */
+function _createapi__helper__process_menu($menu_name) {
+  $links = menu_load_links($menu_name);
+  $formatted_links = array();
+  foreach ($links as $link) {
+    if (!$link['hidden']) {
+      $formatted_links[] = array(
+        'internal_path' => $link['link_path'],
+        'alias' => drupal_get_path_alias($link['link_path']),
+        'title' => $link['link_title'],
+      );
+    }
+  }
+  return $formatted_links;
+}
+
+/**
  * Retrieve nodes of a given content type.
  *
  * @param string $content_type

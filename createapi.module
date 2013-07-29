@@ -37,7 +37,7 @@ function createapi_menu() {
       'page callback' => '_createapi__page__content_types',
       'page arguments' => array($content_type, array_merge($default_values, $endpoint)),
       'access arguments' => array('access content'),
-      'type' => MENU_SUGGESTED_ITEM,
+      'type' => MENU_CALLBACK,
     );
   }
 
@@ -48,7 +48,18 @@ function createapi_menu() {
       'page callback' => '_createapi__page__nodequeues',
       'page arguments' => array($queue_name, array_merge($default_values, $endpoint)),
       'access arguments' => array('access content'),
-      'type' => MENU_SUGGESTED_ITEM,
+      'type' => MENU_CALLBACK,
+    );
+  }
+
+  $menu_endpoints = module_invoke_all('createapi_menus');
+  foreach ($menu_endpoints as $menu_name => $endpoint) {
+    $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
+      'title' => $menu_name,
+      'page callback' => '_createapi__page__menus',
+      'page arguments' => array($menu_name, array_merge($default_values, $endpoint)),
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
     );
   }
 
@@ -59,7 +70,7 @@ function createapi_menu() {
       'page callback' => '_createapi__page__custom_entities',
       'page arguments' => array($endpoint_name, array_merge($default_values, $endpoint)),
       'access arguments' => array('access content'),
-      'type' => MENU_SUGGESTED_ITEM,
+      'type' => MENU_CALLBACK,
     );
   }
 
@@ -92,6 +103,13 @@ function _createapi__page__content_types($content_type, $endpoint) {
 function _createapi__page__nodequeues($queue_name, $endpoint) {
   $nodes = _createapi__helper__process_node_queue($queue_name, $endpoint['data']['fields'], $endpoint['data']['properties'], $endpoint['data']['path'], $endpoint['filters']);
   $output = _createapi__helper__json_wrapper($nodes, $endpoint['wrapper'], $endpoint['row']);
+
+  _createapi__helper__json_response($output);
+}
+
+function _createapi__page__menus($menu_name, $endpoint) {
+  $items = _createapi__helper__process_menu($menu_name);
+  $output = _createapi__helper__json_wrapper($items, $endpoint['wrapper'], $endpoint['row']);
 
   _createapi__helper__json_response($output);
 }
