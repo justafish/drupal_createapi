@@ -12,6 +12,14 @@ include_once 'createapi.helpers.inc';
 function createapi_menu() {
   $items = array();
 
+  $items['admin/config/services/createapi'] = array(
+    'title' => 'CreateAPI Listings',
+    'description' => 'List CreateAPI path.',
+    'page callback' => 'createapi_admin_listing',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'createapi.admin.inc',
+  );
+
   // Use this to prevent errors from accessing array keys that don't exist.
   $default_values = array(
     'version' => '',
