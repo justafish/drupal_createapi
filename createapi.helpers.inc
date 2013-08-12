@@ -44,6 +44,7 @@ function _createapi__helper__process_entities(array $eids, $entity_type, $fields
     if (isset($path) && $path) {
       $path_info = entity_uri($entity_type, $entity);
       if (isset($path_info['path'])) {
+        $field_output[$path] = $path_info['path'];
         $aliased_path = drupal_lookup_path('alias', $path_info['path']);
         if ($aliased_path) {
           $field_output[$path] = $aliased_path;
