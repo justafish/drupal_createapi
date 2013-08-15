@@ -239,6 +239,9 @@ function _createapi__helper__process_node_queue($queue_name, $fields = array(), 
   _createapi__helper__filter__range_offset($query, $range, $offset);
 
   foreach ($filters as $filter => $items) {
+    if (!$query) {
+      break;
+    }
     switch ($filter) {
       case 'properties':
         foreach ($items as $param => $property) {
@@ -347,6 +350,9 @@ function _createapi__helper__process_custom(EntityFieldQuery $query, $entity_typ
   _createapi__helper__filter__range_offset($query, $range, $offset);
 
   foreach ($filters as $filter => $items) {
+    if (!$query) {
+      break;
+    }
     switch ($filter) {
       case 'properties':
         foreach ($items as $param => $property) {

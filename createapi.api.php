@@ -63,7 +63,8 @@ function hook_createapi_content_types() {
       // URL filters that can be used with this endpoint.
       'filters' => array(
         // The key represents the parameter to be used in the URL and the value
-        // is the property to filter by.
+        // is the property to filter by. Multiple parameters can be provided,
+        // separated by ",".
         'properties' => array(
           'id' => 'nid',
         ),

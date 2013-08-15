@@ -19,14 +19,15 @@ function _createapi__helper__filter__property(&$query, $param, $property) {
   $param_value = (isset($query_params[$param])) ? $query_params[$param] : FALSE;
 
   if ($param_value) {
+    $param_value_split = explode(',', $param_value);
     $type = get_class($query);
     switch ($type) {
       case 'SelectQuery':
-        $query->condition($property, $param_value);
+        $query->condition($property, $param_value_split);
         break;
 
       case 'EntityFieldQuery':
-        $query->propertyCondition($property, $param_value);
+        $query->propertyCondition($property, $param_value_split);
         break;
     }
   }
@@ -47,7 +48,8 @@ function _createapi__helper__filter__field(EntityFieldQuery &$query, $param, $co
   $param_value = (isset($query_params[$param])) ? $query_params[$param] : FALSE;
 
   if ($param_value) {
-    $query->fieldCondition($field, $column, $param_value, '=');
+    $param_value_split = explode(',', $param_value);
+    $query->fieldCondition($field, $column, $param_value_split, 'IN');
   }
 }
 
@@ -67,19 +69,26 @@ function _createapi__helper__filter__node_path(&$query, $param, $nid_field = 'ni
   $type = get_class($query);
 
   if ($path) {
-    $internal_path = drupal_get_normal_path($path);
-    if (strlen($internal_path) > 5 && substr($internal_path, 0, 5) === 'node/') {
-      $nid = substr($internal_path, 5);
-      if (is_numeric($nid)) {
-        switch ($type) {
-          case 'SelectQuery':
-            $query->condition($nid_field, $nid);
-            break;
-
-          case 'EntityFieldQuery':
-            $query->propertyCondition($nid_field, $nid);
-            break;
+    $path_split = explode(',', $path);
+    $nids = array();
+    foreach ($path_split as $path) {
+      $internal_path = drupal_get_normal_path($path);
+      if (strlen($internal_path) > 5 && substr($internal_path, 0, 5) === 'node/') {
+        $nid = substr($internal_path, 5);
+        if (is_numeric($nid)) {
+          $nids[] = $nid;
         }
+      }
+    }
+    if (!empty($nids)) {
+      switch ($type) {
+        case 'SelectQuery':
+          $query->condition($nid_field, $nids);
+         break;
+
+        case 'EntityFieldQuery':
+         $query->propertyCondition($nid_field, $nids);
+         break;
       }
     }
     else {
