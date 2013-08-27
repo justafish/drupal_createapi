@@ -47,7 +47,7 @@ function _createapi__helper__process_entities(array $eids, $entity_type, $fields
         $field_output[$path] = $path_info['path'];
         $aliased_path = drupal_lookup_path('alias', $path_info['path']);
         if ($aliased_path) {
-          $field_output[$path] = $aliased_path;
+          $field_output[$path] = drupal_strtolower($aliased_path);
         }
       }
     }
@@ -279,14 +279,37 @@ function _createapi__helper__process_menu($menu_name) {
   $formatted_links = array();
   foreach ($links as $link) {
     if (!$link['hidden']) {
+      $nid = '';
+      if (substr($link['link_path'], 0, 5) === 'node/') {
+        $nid = substr($link['link_path'], 5);
+      }
       $formatted_links[] = array(
         'internal_path' => $link['link_path'],
         'alias' => drupal_get_path_alias($link['link_path']),
         'title' => $link['link_title'],
+        'nid' => $nid,
       );
     }
   }
   return $formatted_links;
+}
+
+/**
+ * Retrieves variables.
+ *
+ * @param array
+ *   Variables to return. Keys will be the new array keys and the values are the
+ *   variable names as seen in the variable table.
+ *
+ * @return array
+ *   A formatted array of variables for outputting.
+ */
+function _createapi__helper__process_variables($variables) {
+  foreach ($variables as $key => $value) {
+    $variables[$key] = variable_get($value);
+  }
+
+  return $variables;
 }
 
 /**

@@ -140,7 +140,7 @@ function hook_createapi_nodequeues() {
 }
 
 /**
- * Expode menus as an endpoint.
+ * Expose menus as an endpoint.
  */
 function hook_createapi_menus() {
   return array(
@@ -216,5 +216,24 @@ function hook_createapi_custom_entities_query_ENDPOINT_ID() {
     ->propertyOrderBy('nid', 'DESC');
 
   return $query;
+}
+
+/**
+ * Expose items from the variable table in a json feed.
+ *
+ * @return array
+ *   Describes the properties of the endpoint.
+ */
+function hook_createapi_variables() {
+  return array(
+    'site-information' => array(
+      'version' => '1.0',
+      'path' => 'site-information.json',
+      'wrapper' => 'variables',
+      'data' => array(
+        'site_name' => 'site_name',
+      ),
+    ),
+  );
 }
 

@@ -51,6 +51,15 @@ function createapi_admin_listing() {
     $rows[] = $row;
   }
 
+  $variable_endpoints = module_invoke_all('createapi_variables');
+  foreach ($variable_endpoints as $endpoint_name => $endpoint) {
+    $path = 'api/' . $endpoint['version'] . '/' . $endpoint['path'];
+    $row = array();
+    $row['data']['path'] = l($path, $path);
+    $row['data']['module'] = 'Variable';
+    $rows[] = $row;
+  }
+
   $custom_endpoints= module_invoke_all('createapi_custom_entities_info');
   foreach ($custom_endpoints as $endpoint_name => $endpoint) {
     $path = 'api/' . $endpoint['version'] . '/' . $endpoint['path'];

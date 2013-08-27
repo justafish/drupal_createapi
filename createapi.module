@@ -82,6 +82,26 @@ function createapi_menu() {
     );
   }
 
+
+  $default_values = array(
+    'version' => '',
+    'path' => '',
+    'wrapper' => '',
+    'row' => '',
+    'data' => array(
+    ),
+  );
+  $variable_endpoints= module_invoke_all('createapi_variables');
+  foreach ($variable_endpoints as $endpoint_name => $endpoint) {
+    $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
+      'title' => $endpoint_name,
+      'page callback' => '_createapi__page__variables',
+      'page arguments' => array($endpoint_name, array_merge($default_values, $endpoint)),
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    );
+  }
+
   return $items;
 }
 
@@ -135,6 +155,16 @@ function _createapi__page__custom_entities($endpoint_name, $endpoint) {
     $entities = _createapi__helper__process_custom($query, $endpoint['custom_query']['entity_type'], $endpoint['data']['fields'], $endpoint['data']['properties'], $endpoint['data']['path'], $endpoint['filters'], $endpoint['custom_query']['nid_alias']);
   }
   $output = _createapi__helper__json_wrapper($entities, $endpoint['wrapper'], $endpoint['row']);
+
+  _createapi__helper__json_response($output);
+}
+
+/**
+ * Creates a JSON feed for a given set of variables.
+ */
+function _createapi__page__variables($endpoint_name, $endpoint) {
+  $items = _createapi__helper__process_variables($endpoint['data']);
+  $output = array($endpoint['wrapper'] => $items);
 
   _createapi__helper__json_response($output);
 }
