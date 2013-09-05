@@ -234,8 +234,8 @@ function _createapi__helper__process_node_queue($queue_name, $fields = array(), 
     ->orderBy('position', 'ASC');
 
   // Limit results.
-  $range  = FALSE;
-  $offset = FALSE;
+  $range = (isset($filters['range'])) ? $filters['range']: FALSE;
+  $offset = (isset($filters['offset'])) ? $filters['offset']: FALSE;
   _createapi__helper__filter__range_offset($query, $range, $offset);
 
   foreach ($filters as $filter => $items) {
