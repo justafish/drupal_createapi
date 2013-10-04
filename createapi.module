@@ -43,7 +43,7 @@ function createapi_menu() {
     $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
       'title' => $content_type,
       'page callback' => '_createapi__page__content_types',
-      'page arguments' => array($content_type, array_merge($default_values, $endpoint)),
+      'page arguments' => array($content_type, drupal_array_merge_deep($default_values, $endpoint)),
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
     );
@@ -54,7 +54,7 @@ function createapi_menu() {
     $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
       'title' => $queue_name,
       'page callback' => '_createapi__page__nodequeues',
-      'page arguments' => array($queue_name, array_merge($default_values, $endpoint)),
+      'page arguments' => array($queue_name, drupal_array_merge_deep($default_values, $endpoint)),
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
     );
@@ -65,7 +65,7 @@ function createapi_menu() {
     $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
       'title' => $menu_name,
       'page callback' => '_createapi__page__menus',
-      'page arguments' => array($menu_name, array_merge($default_values, $endpoint)),
+      'page arguments' => array($menu_name, drupal_array_merge_deep($default_values, $endpoint)),
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
     );
@@ -76,7 +76,7 @@ function createapi_menu() {
     $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
       'title' => $endpoint_name,
       'page callback' => '_createapi__page__custom_entities',
-      'page arguments' => array($endpoint_name, array_merge($default_values, $endpoint)),
+      'page arguments' => array($endpoint_name, drupal_array_merge_deep($default_values, $endpoint)),
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
     );
@@ -96,7 +96,7 @@ function createapi_menu() {
     $items['api/' . $endpoint['version'] . '/' . $endpoint['path']] = array(
       'title' => $endpoint_name,
       'page callback' => '_createapi__page__variables',
-      'page arguments' => array($endpoint_name, array_merge($default_values, $endpoint)),
+      'page arguments' => array($endpoint_name, drupal_array_merge_deep($default_values, $endpoint)),
       'access arguments' => array('access content'),
       'type' => MENU_CALLBACK,
     );
