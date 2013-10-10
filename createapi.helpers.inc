@@ -52,6 +52,8 @@ function _createapi__helper__process_entities(array $eids, $entity_type, $fields
       }
     }
 
+    drupal_alter('createapi_process_entity', $field_output, $entity);
+
     $output[] = $field_output;
   }
 

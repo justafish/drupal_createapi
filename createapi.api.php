@@ -237,3 +237,29 @@ function hook_createapi_variables() {
   );
 }
 
+/**
+ * Alter the output of an entity before it's added to a feed.
+ *
+ * CreateAPI automatically will prepare fields, properties, and path information
+ * based on hook_createapi_custom_entities_info() and other related hooks that
+ * define feed information. For properties that aren't supported by CreateAPI or
+ * for properties that need additional modification, this hook may be used
+ * to add or modify information on an individual item's output.
+ *
+ * @param array $item
+ *   The associative array containing the item that will be JSON encoded.
+ * @param stdClass $entity
+ *   The entity for the item being output.
+ *
+ * @see _createapi__helper__process_entities()
+ */
+function hook_createapi_process_entity_alter(&$item, $entity) {
+  if (isset($item['type']) && $item['type'] == 'photo') {
+    // Remove HTML tags for app delivery.
+    $item['description'] = strip_tags($item['description']);
+
+    // Check if this entity is flagged.
+    $flag = flag_get_flag('promoted');
+    $item['promoted'] = $flag->is_flagged($entity->nid);
+  }
+}
