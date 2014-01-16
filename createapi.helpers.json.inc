@@ -21,7 +21,7 @@
 function _createapi__helper__json_wrapper($rows, $wrapper_label, $row_label) {
   $output = array();
   foreach ($rows as $row) {
-    $output[] = array($row_label => $row);
+    $output[] = $row_label ? array($row_label => $row) : $row;
   }
   $output = array($wrapper_label => $output);
 
