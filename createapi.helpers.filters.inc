@@ -18,7 +18,7 @@ function _createapi__helper__filter__property(&$query, $param, $property) {
   $query_params = drupal_get_query_parameters();
   $param_value = (isset($query_params[$param])) ? $query_params[$param] : FALSE;
 
-  if ($param_value) {
+  if ($param_value !== FALSE) {
     $param_value_split = explode(',', $param_value);
     $type = get_class($query);
     switch ($type) {
