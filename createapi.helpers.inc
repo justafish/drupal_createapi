@@ -142,7 +142,7 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
               $entity_id = $items[$i]['value'];
               $referenced_entity = entity_load('field_collection_item', array($entity_id));
               $reference = array();
-              if ($referenced_entity[$entity_id]) {
+              if ($referenced_entity) {
                 $reference = array(
                   'eid' => $entity_id ,
                 );
