@@ -47,7 +47,7 @@ function _createapi__helper__filter__field(EntityFieldQuery &$query, $param, $co
   $query_params = drupal_get_query_parameters();
   $param_value = (isset($query_params[$param])) ? $query_params[$param] : FALSE;
 
-  if ($param_value) {
+  if ($param_value !== FALSE) {
     $param_value_split = explode(',', $param_value);
     $query->fieldCondition($field, $column, $param_value_split, 'IN');
   }
