@@ -52,8 +52,6 @@ function _createapi__helper__process_entities(array $eids, $entity_type, $fields
       }
     }
 
-    drupal_alter('createapi_process_entity', $field_output, $entity);
-
     $output[] = $field_output;
   }
 
@@ -140,10 +138,38 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
               $output[] = $reference;
               break;
 
+            case 'field_collection':
+              $entity_id = $items[$i]['value'];
+              $referenced_entity = entity_load('field_collection_item', array($entity_id));
+              $reference = array();
+              if ($referenced_entity) {
+                $reference = array(
+                  'eid' => $entity_id ,
+                );
+                if (isset($current)) {
+                  $referenced_entity = $referenced_entity[$entity_id];
+                  // Fields.
+                  if (isset($current['fields'])) {
+                    foreach ($current['fields'] as $key => $field) {
+                      $reference[$key] = _createapi__helper__feed_format_field('field_collection_item', $referenced_entity, $field);
+                    }
+                  }
+                  // Properties.
+                  if (isset($current['properties'])) {
+                    foreach ($current['properties'] as $key => $property) {
+                      $reference[$key] = $referenced_entity->{$property};
+                    }
+                  }
+                }
+              }
+              $output[] = $reference;
+              break;
+
             case 'datetime':
               $output[] = strtotime($items[$i]['value']);
               break;
             case 'datestamp':
+            case 'time_of_day':
               $output[] = $items[$i]['value'];
               break;
 
@@ -192,6 +218,10 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
                 'url' => (isset($items[$i]['url'])) ? $items[$i]['url'] : '',
                 'title' => (isset($items[$i]['title'])) ? $items[$i]['title'] : '',
               );
+              break;
+            case 'list_boolean':
+            case 'list_integer':
+              $output[] = (int) $items[$i]['value'];
               break;
           }
         }
