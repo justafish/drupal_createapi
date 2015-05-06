@@ -95,7 +95,7 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
             case 'list_text':
               $view = field_view_value($entity_type, $entity, $field_name, $items[$i]);
               if (isset($view['#markup'])) {
-                $output[] = $view['#markup'];
+                $output[] = decode_entities($view['#markup']);
               }
               break;
 
@@ -134,7 +134,7 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
                   }
                 }
                 elseif (isset($view['#markup'])) {
-                  $reference['value'] = $view['#markup'];
+                  $reference['value'] = decode_entities($view['#markup']);
                 }
               }
               $output[] = $reference;
