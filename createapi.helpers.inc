@@ -112,7 +112,7 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
 
                 if (isset($current)) {
                   $referenced_entity = entity_load($entity_type, array($target_id));
-                  if (isset($referenced_entity[$target_id])) {
+                  if (isset($referenced_entity[$target_id]) && (!isset($referenced_entity[$target_id]->status) || 1 === (int) $referenced_entity[$target_id]->status)) {
                     $referenced_entity = $referenced_entity[$target_id];
                     // Fields.
                     if (isset($current['fields'])) {
@@ -131,13 +131,14 @@ function _createapi__helper__feed_format_field($entity_type, $entity, $field_nam
                       $path = entity_uri($entity_type, $referenced_entity);
                       $reference[$current['path']] = drupal_get_path_alias($path['path']);
                     }
+                    $output[] = $reference;
                   }
                 }
                 elseif (isset($view['#markup'])) {
                   $reference['value'] = $view['#markup'];
+                  $output[] = $reference;
                 }
               }
-              $output[] = $reference;
               break;
 
             case 'datetime':
